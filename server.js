@@ -7,6 +7,7 @@ const cors = require('cors')
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
 const uploadRoutes = require('./app/routes/upload_routes')
+const statusRoutes = require('./app/routes/status_routes')
 
 // require middleware
 const errorHandler = require('./lib/error_handler')
@@ -38,7 +39,11 @@ const app = express()
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }))
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}`
+  })
+)
 
 // define port for API to run on
 const port = process.env.PORT || serverDevPort
@@ -65,6 +70,7 @@ app.use(requestLogger)
 app.use(exampleRoutes)
 app.use(userRoutes)
 app.use(uploadRoutes)
+app.use(statusRoutes)
 
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
