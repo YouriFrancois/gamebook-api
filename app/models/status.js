@@ -7,7 +7,7 @@ const statusSchema = new mongoose.Schema(
       required: true
     },
     comment: [{ name: String, message: String }],
-    review: [Number],
+    review: [{ name: String, point: Number }],
 
     owner: {
       type: mongoose.Schema.Types.ObjectId,
