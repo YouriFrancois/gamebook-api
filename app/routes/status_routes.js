@@ -85,13 +85,9 @@ router.patch('/status/:id', requireToken, removeBlanks, (req, res, next) => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
       requireOwnership(req, status)
-      console.log('this', req.body.status)
+
       // pass the result of Mongoose's `.update` to the next `.then`
-      if (req.body.status.comment) {
-        return status.updateOne({ $push: { comment: req.body.status.comment } })
-      } else if (req.body.status.review) {
-        return status.updateOne({ $push: { review: req.body.status.review } })
-      }
+
       return status.updateOne(req.body.status)
     })
     // if that succeeded, return 204 and no JSON
@@ -100,19 +96,21 @@ router.patch('/status/:id', requireToken, removeBlanks, (req, res, next) => {
     .catch(next)
 })
 //* *************************************************
-// RSVP -----
-// router.patch('/status-comment/:id', removeBlanks, (req, res, next) => {
-//   delete req.body.status.owner
-//   // remove the 'owner' property form the req.body.example so it cannot be updated
-//   Status.findById(req.params.id)
-//     .then(handle404)
-//     .then(status => {
-//       console.log('this 1', req.body.status)
-//       return status.updateOne({ $push: { comment: req.body.status.comment } })
-//     })
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-// })
+router.patch('/status-comment/:id', removeBlanks, (req, res, next) => {
+  delete req.body.status.owner
+  // remove the 'owner' property form the req.body.example so it cannot be updated
+  Status.findById(req.params.id)
+    .then(handle404)
+    .then(status => {
+      if (req.body.status.comment) {
+        return status.updateOne({ $push: { comment: req.body.status.comment } })
+      } else if (req.body.status.review) {
+        return status.updateOne({ $push: { review: req.body.status.review } })
+      }
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
 //* *************************************************
 // DESTROY
 // DELETE /status/5a7db6c74d55bc51bdf39793
